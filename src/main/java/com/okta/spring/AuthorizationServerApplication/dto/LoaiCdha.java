@@ -6,7 +6,7 @@ import lombok.Data;
 public class LoaiCdha {
     private String dvtt;
     private Integer maLoaiCdha;
-    private String motaLoaiCdha;
+    private String moTaLoaiCdha;
     private String moTaText;
     private String tenLoaiCdha;
 }

@@ -8,7 +8,7 @@ public class Cdha {
     private String dvtt;
     private Number giaCdha;
     private LoaiCdha loaiCdha;
-    private String maCdha;
+    private Integer maCdha;
     private String tenCdha;
     private Integer trangThaiBhyt;
 }

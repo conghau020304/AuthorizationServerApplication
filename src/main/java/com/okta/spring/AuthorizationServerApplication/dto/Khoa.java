@@ -6,6 +6,7 @@ import lombok.Setter;
 
 @Data
 public class Khoa {
+    private Integer maDonVi;;
     private Integer maPhongBan;
     private String tenPhongBan;
 }

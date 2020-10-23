@@ -8,6 +8,8 @@ public class KetQuaChiDinhDTO {
     private String ketLuan;
     private String ketQua;
     private String loiDan;
-    private Integer maBacSiThucHien;
-    private Integer maKyThuatVien;
+    private String maBacSiThucHien;
+    private String maKyThuatVien;
+    private String maThietBiThucHien;
+    private String thoiGianChanDoan;
 }
