@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class HisController {
 
     private static Logger logger = LoggerFactory.getLogger(HisController.class);
-    private static final String DATE_TIME_FORMATT = "dd/MM/yyyy";
+    private static final String DATE_TIME_FORMATT = "yyyy/MM/dd HH:mm:ss";
     private static final String DATE_TIME_FORMAT2 = "dd/MM/yyyy HH:mm";
     @Autowired
     private HisService hisService;
@@ -46,10 +46,10 @@ public class HisController {
 
     @GetMapping("/chi-dinh")
     @ResponseBody
-    public ResponseEntity<List<ChiDinhDTO>> getDsChiDinhByDate(@RequestParam String startTime, @RequestParam String endTime, @RequestParam String trangThaiPacs) {
-        logger.info("startDate: {}, endDate: {}, status: {}", startTime, endTime, trangThaiPacs);
-        LocalDate time = LocalDate.parse(startTime, DateTimeFormatter.ofPattern(DATE_TIME_FORMATT));
-        LocalDate time2 = LocalDate.parse(endTime, DateTimeFormatter.ofPattern(DATE_TIME_FORMATT));
+    public ResponseEntity<List<ChiDinhDTO>> getDsChiDinhByDate(@RequestParam String startTime, @RequestParam String endTime) {
+        logger.info("startDate: {}, endDate: {}", startTime, endTime);
+        LocalDateTime time = LocalDateTime.parse(startTime, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime time2 = LocalDateTime.parse(endTime, DateTimeFormatter.ISO_DATE_TIME);
         System.out.println(time);
         System.out.println(time2);
         boolean check = time.equals(time2);
@@ -57,21 +57,36 @@ public class HisController {
             dsCD = hisService.mockDataDsChiDinh();
 
         }
+        System.out.println(dsCD);
         List<ChiDinhDTO> ds = dsCD.stream()
                 .filter(item -> {
-                    if (!check) {
-                        return item.getNgayChiDinhCt2().plusDays(1).isAfter(time) && item.getNgayChiDinhCt2().minusDays(1).isBefore(time2) && item.getTrangThaiPacs() == Integer.parseInt(trangThaiPacs);
-                    } else {
-                        return item.getNgayChiDinhCt2().isEqual(time) && item.getTrangThaiPacs() == Integer.parseInt(trangThaiPacs);
-                    }
+                   // if (!check) {
+                        return item.getNgayChiDinhCt2().isAfter(time) && item.getNgayChiDinhCt2().isBefore(time2); //&& item.getTrangThaiPacs() == Integer.parseInt(trangThaiPacs);
+                   // } else {
+                   //     return item.getNgayChiDinhCt2().isEqual(time) && item.getTrangThaiPacs() == Integer.parseInt(trangThaiPacs);
+                   // }
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(ds);
     }
 
+//    @PutMapping("/chi-dinh")
+//    @ResponseBody
+//    public ResponseEntity<?> updateStatusDsChiDinh(@RequestBody List<String> uuids) {
+//        logger.info("updateStatusDsChiDinh uuids: {}", uuids.toString());
+//        dsCD = dsCD.stream().peek(c -> {
+//            if (uuids.contains(c.getUuid())) {
+//                c.setTrangThaiPacs(1);
+//            }
+//        }).collect(Collectors.toList());
+//        String[] xx = dsCD.stream().filter(c -> uuids.contains(c.getUuid())).map(ChiDinhDTO::getUuid).toArray(String[]::new);
+//        return ResponseEntity.ok().body(Arrays.toString(xx));
+//    }
+
     @PutMapping("/chi-dinh")
     @ResponseBody
-    public ResponseEntity<?> updateStatusDsChiDinh(@RequestBody List<String> uuids) {
+    public ResponseEntity<?> updateStatusDsChiDinh(@RequestBody ReceiveStatus receiveStatus) {
+        List<String> uuids = receiveStatus.getUuids();
         logger.info("updateStatusDsChiDinh uuids: {}", uuids.toString());
         dsCD = dsCD.stream().peek(c -> {
             if (uuids.contains(c.getUuid())) {
@@ -164,15 +179,15 @@ public class HisController {
         return ResponseEntity.ok().body(hisService.mockDataDanhMucDichVu());
     }
 
-    @GetMapping("/dich-vu/{id}")
+    @GetMapping("/dich-vu/{maCdha}")
     @ResponseBody
-    public ResponseEntity<Cdha> getOneDanhMucDanhVu(@PathVariable String id) {
-        logger.info("get One Danh muc dich vu {} ", id);
+    public ResponseEntity<Cdha> getOneDanhMucDanhVu(@PathVariable String maCdha) {
+        logger.info("get One Danh muc dich vu {} ", maCdha);
         Cdha cdha = new Cdha();
         try {
             cdha = hisService.mockDataDanhMucDichVu()
                     .stream()
-                    .filter(item -> item.getMaCdha() == Integer.parseInt(id))
+                    .filter(item -> item.getMaCdha() == Integer.parseInt(maCdha))
                     .findFirst().orElseThrow(() -> new RuntimeException("not found"));
         } catch (NullPointerException e) {
             logger.error("Null poiter ", e.getMessage());
@@ -216,5 +231,18 @@ public class HisController {
 //        logger.info("getDsDanhMucDichVu {}, {}",id, name);
 //        return ResponseEntity.ok().body(hisService.mockDataDanhMucDichVu().stream().filter(item -> item.getMaCdha().equals(id) && item.getTenCdha().contains(name)).collect(Collectors.toList()));
 //    }
+
+    @DeleteMapping("/chi-dinh/{uuid}")
+    @ResponseBody
+    public ResponseEntity<ChiDinhDTO> testRejectRequestOrder(@PathVariable String uuid,  @RequestBody ChiDinhDTO chiDinhDTO){
+        logger.info("testRejectRequestOrder {}", chiDinhDTO);
+        dsCD.forEach(item -> {
+            if(item.getUuid().equals(uuid)){
+                item.setLyDoTuChoi(chiDinhDTO.getLyDoTuChoi());
+                item.setTrangThaiPacs(8);
+            }
+        });
+        return ResponseEntity.ok().body(dsCD.stream().filter(i -> i.getUuid().equals(uuid)).findFirst().orElse(new ChiDinhDTO()));
+    }
 
 }

@@ -22,10 +22,12 @@ public class ChiDinhDTO {
     private String ketLuan;
     private String ketQua;
     private String loiDan;
+    private Integer kyThuatVien;
+    private String lyDoTuChoi;
     private int maBacSiThucHien;
     private int maMauSieuAm;
     private String ngayChiDinhCt;
-    private LocalDate ngayChiDinhCt2;
+    private LocalDateTime ngayChiDinhCt2;
     private String ngayThucHien;
     private NhanVienDTO nguoiChiDinh;
     private int noiTru;

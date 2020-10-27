@@ -12,6 +12,7 @@ import java.util.List;
 @Component
 public class HisService {
     private static final String DATE_TIME_FORMATT = "dd/MM/yyyy";
+    private static final String DATE_TIME_FORMATT3 = "yyyy-MM-dd hh:mm:ss";
     private static final String DATE_TIME_FORMATT2 = "dd/MM/yyyy HH:mm";
     public List<Phong> mockDataDsPhong(){
         List<Phong> dsPhong = new ArrayList<>();
@@ -71,7 +72,7 @@ public class HisService {
             cdha.setDvtt("dvtt " + i);
            // cdha.setGiaCdha(1000 + i);
             cdha.setLoaiCdha(loaiCdha);
-            cdha.setMaCdha(i);
+            cdha.setMaCdha(i+10);
             cdha.setTenCdha("TenCDHAe UpdateLan2 " + i);
             cdha.setTrangThaiBhyt(i % 2 == 0 ? 0 : 1);
 
@@ -94,7 +95,7 @@ public class HisService {
 
     public List<ChiDinhDTO> mockDataDsChiDinh(){
         List<ChiDinhDTO> dsChiDinh = new ArrayList<>();
-        String []ds = {"1111111", "2222222", "3333333", "4444444", "5555555", "6666666"};
+        String []ds = {"11111111", "22222222", "33333333", "44444444", "55555555", "66666666"};
         for(int i = 0; i < 5 ; i++){
             ChiDinhDTO chiDinh = new ChiDinhDTO();
             chiDinh.setBacSiThucHien("Bac si thuc hien " + i);
@@ -127,7 +128,7 @@ public class HisService {
             cdhaDTO.setDvtt("dvtt " + i);
             cdhaDTO.setGiaCdha(1000 + i);
             cdhaDTO.setLoaiCdha(loaiCdhaDTO);
-            cdhaDTO.setMaCdha(i+"");
+            cdhaDTO.setMaCdha(i+10+"");
             cdhaDTO.setTenCdha("TenCDHA " + i);
             cdhaDTO.setTrangThaiBhyt(i % 2 == 0 ? 0 : 1);
 
@@ -140,11 +141,11 @@ public class HisService {
             chiDinh.setLoiDan("Loi dan " + i);
             chiDinh.setMaBacSiThucHien(1);
             chiDinh.setMaMauSieuAm(i);
-            DateTimeFormatter dt = DateTimeFormatter.ofPattern(DATE_TIME_FORMATT);
+            DateTimeFormatter dt = DateTimeFormatter.ISO_DATE_TIME;
             if(i%2==0) {
-                chiDinh.setNgayChiDinhCt2(LocalDate.parse(LocalDate.now().format(dt), dt));
+                chiDinh.setNgayChiDinhCt2(LocalDateTime.parse(LocalDateTime.now().format(dt), dt));
             }else{
-                chiDinh.setNgayChiDinhCt2(LocalDate.parse(LocalDate.now().plusDays(1).format(dt), dt));
+                chiDinh.setNgayChiDinhCt2(LocalDateTime.parse(LocalDateTime.now().plusDays(2).format(dt), dt));
             }
             chiDinh.setNgayChiDinhCt(chiDinh.getNgayChiDinhCt2().format(dt));
             NhanVienDTO nhanVienDTO = new NhanVienDTO();
